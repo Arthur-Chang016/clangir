@@ -1988,20 +1988,19 @@ void CIRGenFunction::emitCXXConstructorCall(
 
   if (isMemcpyEquivalentSpecialMember(D)) {
     // Build Address for the source (1st ctor arg).
-
-    // TODO a wild check. knowing that a Copy constructor(this, other *)
-    // should remove
     assert(Args.size() == 2 && "Copy constructor has size == 2");
     mlir::Value Src = Args[1].getRValue(*this, getLoc(Loc)).getScalarVal();
+    // Src should have the same alignment as This
     Address SrcAddr(Src, This.getAlignment());
 
-    auto Builder = CGM.getBuilder();
-
-    // Emit cir.copy  %src to %dst  : !cir.ptr<!rec_Trivial>
-
-    // TODO check isVolatile
-    const bool isVolatile = false;
-    Builder.createCopy(This.getPointer(), SrcAddr.getPointer(), isVolatile);
+    QualType ClassQT = getContext().getRecordType(D->getParent());
+    LValue DestLV = makeAddrLValue(This, ClassQT);
+    LValue SrcLV = makeAddrLValue(SrcAddr, ClassQT);
+    const bool isVolatile = DestLV.isVolatile() || SrcLV.isVolatile();
+    if (isVolatile)
+      llvm_unreachable("NYI");
+    emitAggregateCopy(DestLV, SrcLV, ClassQT, Overlap,
+                      DestLV.isVolatile() || SrcLV.isVolatile());
     return;
   }
 
