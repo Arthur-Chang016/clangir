@@ -1622,6 +1622,16 @@ void CIRGenFunction::emitAggExpr(const Expr *E, AggValueSlot Slot) {
   AggExprEmitter(*this, Slot, Slot.isIgnored()).Visit(const_cast<Expr *>(E));
 }
 
+void CIRGenFunction::emitAggregateCopyCtor(LValue &DestLV, LValue &SrcLV,
+                                           QualType ClassQT,
+                                           AggValueSlot::Overlap_t Overlap) {
+  const bool isVolatile = DestLV.isVolatile() || SrcLV.isVolatile();
+  if (isVolatile)
+    llvm_unreachable("NYI");
+  emitAggregateCopy(DestLV, SrcLV, ClassQT, Overlap,
+                    DestLV.isVolatile() || SrcLV.isVolatile());
+}
+
 void CIRGenFunction::emitAggregateCopy(LValue Dest, LValue Src, QualType Ty,
                                        AggValueSlot::Overlap_t MayOverlap,
                                        bool isVolatile) {

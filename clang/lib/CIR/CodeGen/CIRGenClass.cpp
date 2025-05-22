@@ -1994,11 +1994,7 @@ void CIRGenFunction::emitCXXConstructorCall(
     Address SrcAddr = makeNaturalAddressForPointer(Src, ClassQT);
     LValue DestLV = makeAddrLValue(This, ClassQT);
     LValue SrcLV = makeAddrLValue(SrcAddr, ClassQT);
-    const bool isVolatile = DestLV.isVolatile() || SrcLV.isVolatile();
-    if (isVolatile)
-      llvm_unreachable("NYI");
-    emitAggregateCopy(DestLV, SrcLV, ClassQT, Overlap,
-                      DestLV.isVolatile() || SrcLV.isVolatile());
+    emitAggregateCopyCtor(DestLV, SrcLV, ClassQT, Overlap);
     return;
   }
 

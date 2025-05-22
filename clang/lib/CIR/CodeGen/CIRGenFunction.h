@@ -1711,6 +1711,9 @@ public:
                          AggValueSlot::Overlap_t MayOverlap,
                          bool isVolatile = false);
 
+  void emitAggregateCopyCtor(LValue &DestLV, LValue &SrcLV, QualType ClassQT,
+                             AggValueSlot::Overlap_t Overlap);
+
   void emitAggregateStore(mlir::Value Val, Address Dest, bool DestIsVolatile);
 
   void emitAggExpr(const clang::Expr *E, AggValueSlot Slot);
