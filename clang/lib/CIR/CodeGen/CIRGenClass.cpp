@@ -1988,12 +1988,10 @@ void CIRGenFunction::emitCXXConstructorCall(
 
   if (isMemcpyEquivalentSpecialMember(D)) {
     // Build Address for the source (1st ctor arg).
-    assert(Args.size() == 2 && "Copy constructor has size == 2");
+    assert(Args.size() == 2 && "Copy constructor arguments has size == 2");
     mlir::Value Src = Args[1].getRValue(*this, getLoc(Loc)).getScalarVal();
-    // Src should have the same alignment as This
-    Address SrcAddr(Src, This.getAlignment());
-
     QualType ClassQT = getContext().getRecordType(D->getParent());
+    Address SrcAddr = makeNaturalAddressForPointer(Src, ClassQT);
     LValue DestLV = makeAddrLValue(This, ClassQT);
     LValue SrcLV = makeAddrLValue(SrcAddr, ClassQT);
     const bool isVolatile = DestLV.isVolatile() || SrcLV.isVolatile();
