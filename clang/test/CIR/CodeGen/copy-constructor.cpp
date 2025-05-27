@@ -46,42 +46,19 @@ struct ManyMembers {
   int *p;
 };
 
-// CIR-LABEL: cir.func linkonce_odr @_ZN11ManyMembersC2ERKS_(
-// CIR:         %[[#THIS_LOAD:]] = cir.load{{.*}} %[[#]]
-// CIR-NEXT:    %[[#THIS_I:]] = cir.get_member %[[#THIS_LOAD]][0] {name = "i"}
-// CIR-NEXT:    %[[#OTHER_LOAD:]] = cir.load{{.*}} %[[#OTHER:]]
-// CIR-NEXT:    %[[#OTHER_I:]] = cir.get_member %[[#OTHER_LOAD]][0] {name = "i"}
-// CIR-NEXT:    %[[#MEMCPY_SIZE:]] = cir.const #cir.int<8>
-// CIR-NEXT:    %[[#THIS_I_CAST:]] = cir.cast(bitcast, %[[#THIS_I]] : !cir.ptr<!s32i>), !cir.ptr<!void>
-// CIR-NEXT:    %[[#OTHER_I_CAST:]] = cir.cast(bitcast, %[[#OTHER_I]] : !cir.ptr<!s32i>), !cir.ptr<!void>
-// CIR-NEXT:    cir.libc.memcpy %[[#MEMCPY_SIZE]] bytes from %[[#OTHER_I_CAST]] to %[[#THIS_I_CAST]]
-// CIR-NEXT:    %[[#THIS_K:]] = cir.get_member %[[#THIS_LOAD]][2] {name = "k"}
-// CIR-NEXT:    %[[#OTHER_LOAD:]] = cir.load{{.*}} %[[#OTHER]]
-// CIR-NEXT:    %[[#OTHER_K:]] = cir.get_member %[[#OTHER_LOAD]][2] {name = "k"}
-// CIR-NEXT:    cir.call @_ZN7TrivialC1ERKS_(%[[#THIS_K]], %[[#OTHER_K]])
-// CIR-NEXT:    %[[#THIS_L:]] = cir.get_member %[[#THIS_LOAD]][3] {name = "l"}
-// CIR-NEXT:    %[[#OTHER_LOAD:]] = cir.load{{.*}} %[[#OTHER]]
-// CIR-NEXT:    %[[#OTHER_L:]] = cir.get_member %[[#OTHER_LOAD]][3] {name = "l"}
-// CIR-NEXT:    %[[#MEMCPY_SIZE:]] = cir.const #cir.int<12>
-// CIR-NEXT:    %[[#THIS_L_CAST:]] = cir.cast(bitcast, %[[#THIS_L]] : !cir.ptr<!cir.array<!s32i x 1>>), !cir.ptr<!void>
-// CIR-NEXT:    %[[#OTHER_L_CAST:]] = cir.cast(bitcast, %[[#OTHER_L]] : !cir.ptr<!cir.array<!s32i x 1>>), !cir.ptr<!void>
-// CIR-NEXT:    cir.libc.memcpy %[[#MEMCPY_SIZE]] bytes from %[[#OTHER_L_CAST]] to %[[#THIS_L_CAST]]
-// CIR-NEXT:    %[[#THIS_N:]] = cir.get_member %[[#THIS_LOAD]][5] {name = "n"}
-// CIR-NEXT:    %[[#OTHER_LOAD:]] = cir.load{{.*}} %[[#OTHER]]
-// CIR-NEXT:    %[[#OTHER_N:]] = cir.get_member %[[#OTHER_LOAD]][5] {name = "n"}
-// CIR-NEXT:    cir.call @_ZN7TrivialC1ERKS_(%[[#THIS_N]], %[[#OTHER_N]])
-// CIR-NEXT:    %[[#THIS_O:]] = cir.get_member %[[#THIS_LOAD]][6] {name = "o"}
-// CIR-NEXT:    %[[#OTHER_LOAD:]] = cir.load{{.*}} %[[#OTHER]]
-// CIR-NEXT:    %[[#OTHER_O:]] = cir.get_member %[[#OTHER_LOAD]][6] {name = "o"}
-// CIR-NEXT:    %[[#MEMCPY_SIZE:]] = cir.const #cir.int<16>
-// CIR-NEXT:    %[[#THIS_O_CAST:]] = cir.cast(bitcast, %[[#THIS_O]] : !cir.ptr<!cir.ptr<!s32i>>), !cir.ptr<!void>
-// CIR-NEXT:    %[[#OTHER_O_CAST:]] = cir.cast(bitcast, %[[#OTHER_O]] : !cir.ptr<!cir.ptr<!s32i>>), !cir.ptr<!void>
-// CIR-NEXT:    cir.libc.memcpy %[[#MEMCPY_SIZE]] bytes from %[[#OTHER_O_CAST]] to %[[#THIS_O_CAST]]
-// CIR-NEXT:    cir.return
-// CIR-NEXT:  }
+// CIR-LABEL: cir.func @_ZN20HasScalarArrayMemberC1ERKS_(
+// CIR:         cir.copy
+void forceCopy(ManyMembers &m) {
+  // Force use of copy constructor
+  // but even do this, 
+  // it won't use the original member-by-member copy.
+  // the original call of copy constructor will be optimized out
+  // and generate a cir.copy instead.
+  ManyMembers copy(m);  
+}
 
 // CIR-LABEL: cir.func @_Z6doCopyR11ManyMembers(
-// CIR:         cir.call @_ZN11ManyMembersC1ERKS_(
+// CIR:         cir.copy
 ManyMembers doCopy(ManyMembers &src) {
   return src;
 }
