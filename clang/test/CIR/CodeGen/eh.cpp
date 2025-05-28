@@ -14,7 +14,7 @@ void test1() {
 // CIR-LABEL: @_Z5test1v
 // CIR:   %[[ALLOC:.*]] = cir.alloc.exception 8 -> !cir.ptr<!rec_test1_D>
 // CIR:   %[[G:.*]] = cir.get_global @d1 : !cir.ptr<!rec_test1_D>
-// CIR:   cir.call @_ZN7test1_DC1ERKS_(%[[ALLOC]], %[[G]]) : (!cir.ptr<!rec_test1_D>, !cir.ptr<!rec_test1_D>) -> ()
+// CIR:   cir.copy %1 to %0 : !cir.ptr<!rec_test1_D>
 // CIR:   cir.throw %[[ALLOC]] : !cir.ptr<!rec_test1_D>, @_ZTI7test1_D
 // CIR:   cir.unreachable
 // CIR: }
@@ -23,7 +23,7 @@ void test1() {
 // LLVM:   %[[ALLOC:.*]] = call ptr @__cxa_allocate_exception(i64 8)
 
 // FIXME: this is a llvm.memcpy.p0.p0.i64 once we fix isTrivialCtorOrDtor().
-// LLVM:   call void @_ZN7test1_DC1ERKS_(ptr %[[ALLOC]], ptr @d1)
+// LLVM:   call void @llvm.memcpy.p0.p0.i32(ptr %1, ptr @d1, i32 8, i1 false)
 // LLVM:   call void @__cxa_throw(ptr %[[ALLOC]], ptr @_ZTI7test1_D, ptr null)
 // LLVM:   unreachable
 // LLVM: }
