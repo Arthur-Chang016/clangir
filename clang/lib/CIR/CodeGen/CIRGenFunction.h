@@ -279,6 +279,23 @@ private:
     ~VarDeclContext() { restore(); }
   };
 
+  // Track when we're emitting a dereference operation
+  bool currIsDeref = false;
+  class DerefContext {
+    CIRGenFunction &P;
+    bool OldVal = false;
+
+  public:
+    DerefContext(CIRGenFunction &p, bool Value) : P(p) {
+      OldVal = P.currIsDeref;
+      P.currIsDeref = Value;
+    }
+
+    // Restore the state
+    void restore() { P.currIsDeref = OldVal; }
+    ~DerefContext() { restore(); }
+  };
+
   /// -------
   /// Source Location tracking
   /// -------

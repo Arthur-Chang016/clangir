@@ -606,8 +606,17 @@ public:
   mlir::Value VisitUnaryDeref(const UnaryOperator *E) {
     if (E->getType()->isVoidType())
       return Visit(E->getSubExpr()); // the actual value should be unused
-    return emitLoadOfLValue(E);
+
+    // loads via emitUnaryOpLValue, and emitLoadOfLValue handles the final load
+    // The LV (cir.load) shouldn't have the deref attr
+    LValue LV = CGF.emitLValue(E);
+
+    // Set deref only for the final load that actually dereferences the pointer
+    // The context will only be live in this scope
+    CIRGenFunction::DerefContext derefContext(CGF, true);
+    return CGF.emitLoadOfLValue(LV, E->getExprLoc()).getScalarVal();
   }
+
   mlir::Value VisitUnaryPlus(const UnaryOperator *E,
                              QualType PromotionType = QualType()) {
     QualType promotionTy = PromotionType.isNull()

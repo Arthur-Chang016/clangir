@@ -165,10 +165,9 @@ public:
 
   cir::LoadOp createLoad(mlir::Location loc, mlir::Value ptr,
                          bool isVolatile = false, bool isNontemporal = false,
-                         uint64_t alignment = 0) {
+                         uint64_t alignment = 0, bool isDeref = false) {
     mlir::IntegerAttr alignmentAttr = getAlignmentAttr(alignment);
-    return create<cir::LoadOp>(loc, ptr, /*isDeref=*/false, isVolatile,
-                               isNontemporal,
+    return create<cir::LoadOp>(loc, ptr, isDeref, isVolatile, isNontemporal,
                                /*alignment=*/alignmentAttr,
                                /*mem_order=*/
                                cir::MemOrderAttr{},

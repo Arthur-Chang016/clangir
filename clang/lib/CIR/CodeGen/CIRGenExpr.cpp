@@ -1328,12 +1328,6 @@ LValue CIRGenFunction::emitUnaryOpLValue(const UnaryOperator *E) {
     Address Addr =
         emitPointerWithAlignment(E->getSubExpr(), &BaseInfo, &TBAAInfo);
 
-    // Tag 'load' with deref attribute.
-    if (auto loadOp =
-            dyn_cast<cir::LoadOp>(Addr.getPointer().getDefiningOp())) {
-      loadOp.setIsDerefAttr(mlir::UnitAttr::get(&getMLIRContext()));
-    }
-
     LValue LV = LValue::makeAddr(Addr, T, BaseInfo, TBAAInfo);
     // TODO: set addr space
     // TODO: ObjC/GC/__weak write barrier stuff.
@@ -2948,7 +2942,8 @@ mlir::Value CIRGenFunction::emitLoadOfScalar(Address addr, bool isVolatile,
 
   if (mlir::isa<cir::VoidType>(eltTy))
     addr = addr.withElementType(builder, builder.getUIntNTy(8));
-  auto loadOp = builder.createLoad(loc, addr, isVolatile, isNontemporal);
+  auto loadOp =
+      builder.createLoad(loc, addr, isVolatile, isNontemporal, currIsDeref);
 
   CGM.decorateOperationWithTBAA(loadOp, tbaaInfo);
 
