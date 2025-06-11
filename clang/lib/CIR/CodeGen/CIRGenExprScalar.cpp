@@ -245,14 +245,15 @@ public:
   }
 
   /// Emits the address of the l-value, then loads and returns the result.
-  mlir::Value emitLoadOfLValue(const Expr *E) {
+  mlir::Value emitLoadOfLValue(const Expr *E, bool isDeref = false) {
     LValue LV = CGF.emitLValue(E);
     // FIXME: add some akin to EmitLValueAlignmentAssumption(E, V);
-    return CGF.emitLoadOfLValue(LV, E->getExprLoc()).getScalarVal();
+    return CGF.emitLoadOfScalar(LV, E->getExprLoc(), isDeref);
   }
 
-  mlir::Value emitLoadOfLValue(LValue LV, SourceLocation Loc) {
-    return CGF.emitLoadOfLValue(LV, Loc).getScalarVal();
+  mlir::Value emitLoadOfLValue(LValue LV, SourceLocation Loc,
+                               bool isDeref = false) {
+    return CGF.emitLoadOfScalar(LV, Loc, isDeref);
   }
 
   // l-values
@@ -606,7 +607,7 @@ public:
   mlir::Value VisitUnaryDeref(const UnaryOperator *E) {
     if (E->getType()->isVoidType())
       return Visit(E->getSubExpr()); // the actual value should be unused
-    return emitLoadOfLValue(E);
+    return emitLoadOfLValue(E, /*isDeref=*/true);
   }
   mlir::Value VisitUnaryPlus(const UnaryOperator *E,
                              QualType PromotionType = QualType()) {

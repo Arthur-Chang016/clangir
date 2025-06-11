@@ -2229,27 +2229,32 @@ public:
   mlir::Value emitLoadOfScalar(Address addr, bool isVolatile,
                                clang::QualType ty, clang::SourceLocation loc,
                                LValueBaseInfo baseInfo, TBAAAccessInfo tbaaInfo,
-                               bool isNontemporal = false);
+                               bool isNontemporal = false,
+                               bool isDeref = false);
   mlir::Value emitLoadOfScalar(Address addr, bool isVolatile,
                                clang::QualType ty, mlir::Location loc,
                                LValueBaseInfo baseInfo, TBAAAccessInfo tbaaInfo,
-                               bool isNontemporal = false);
+                               bool isNontemporal = false,
+                               bool isDeref = false);
 
   /// Load a scalar value from an address, taking care to appropriately convert
   /// from the memory representation to CIR value representation.
   mlir::Value emitLoadOfScalar(Address addr, bool isVolatile,
                                clang::QualType ty, clang::SourceLocation loc,
                                AlignmentSource source = AlignmentSource::Type,
-                               bool isNontemporal = false) {
+                               bool isNontemporal = false,
+                               bool isDeref = false) {
     return emitLoadOfScalar(addr, isVolatile, ty, loc, LValueBaseInfo(source),
-                            CGM.getTBAAAccessInfo(ty), isNontemporal);
+                            CGM.getTBAAAccessInfo(ty), isNontemporal, isDeref);
   }
 
   /// Load a scalar value from an address, taking care to appropriately convert
   /// form the memory representation to the CIR value representation. The
   /// l-value must be a simple l-value.
-  mlir::Value emitLoadOfScalar(LValue lvalue, clang::SourceLocation Loc);
-  mlir::Value emitLoadOfScalar(LValue lvalue, mlir::Location Loc);
+  mlir::Value emitLoadOfScalar(LValue lvalue, clang::SourceLocation Loc,
+                               bool isDeref = false);
+  mlir::Value emitLoadOfScalar(LValue lvalue, mlir::Location Loc,
+                               bool isDeref = false);
 
   /// Emit code to compute a designator that specifies the location
   /// of the expression.

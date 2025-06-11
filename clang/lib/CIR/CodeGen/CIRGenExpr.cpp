@@ -2879,18 +2879,20 @@ mlir::Value CIRGenFunction::emitAlloca(StringRef name, QualType ty,
                     insertIntoFnEntryBlock, arraySize);
 }
 
-mlir::Value CIRGenFunction::emitLoadOfScalar(LValue lvalue,
-                                             SourceLocation loc) {
+mlir::Value CIRGenFunction::emitLoadOfScalar(LValue lvalue, SourceLocation loc,
+                                             bool isDeref) {
   return emitLoadOfScalar(lvalue.getAddress(), lvalue.isVolatile(),
                           lvalue.getType(), getLoc(loc), lvalue.getBaseInfo(),
-                          lvalue.getTBAAInfo(), lvalue.isNontemporal());
+                          lvalue.getTBAAInfo(), lvalue.isNontemporal(),
+                          isDeref);
 }
 
-mlir::Value CIRGenFunction::emitLoadOfScalar(LValue lvalue,
-                                             mlir::Location loc) {
+mlir::Value CIRGenFunction::emitLoadOfScalar(LValue lvalue, mlir::Location loc,
+                                             bool isDeref) {
   return emitLoadOfScalar(lvalue.getAddress(), lvalue.isVolatile(),
                           lvalue.getType(), loc, lvalue.getBaseInfo(),
-                          lvalue.getTBAAInfo(), lvalue.isNontemporal());
+                          lvalue.getTBAAInfo(), lvalue.isNontemporal(),
+                          isDeref);
 }
 
 mlir::Value CIRGenFunction::emitFromMemory(mlir::Value Value, QualType Ty) {
@@ -2905,16 +2907,16 @@ mlir::Value CIRGenFunction::emitLoadOfScalar(Address addr, bool isVolatile,
                                              QualType ty, SourceLocation loc,
                                              LValueBaseInfo baseInfo,
                                              TBAAAccessInfo tbaaInfo,
-                                             bool isNontemporal) {
+                                             bool isNontemporal, bool isDeref) {
   return emitLoadOfScalar(addr, isVolatile, ty, getLoc(loc), baseInfo, tbaaInfo,
-                          isNontemporal);
+                          isNontemporal, isDeref);
 }
 
 mlir::Value CIRGenFunction::emitLoadOfScalar(Address addr, bool isVolatile,
                                              QualType ty, mlir::Location loc,
                                              LValueBaseInfo baseInfo,
                                              TBAAAccessInfo tbaaInfo,
-                                             bool isNontemporal) {
+                                             bool isNontemporal, bool isDeref) {
   assert(!cir::MissingFeatures::threadLocal() && "NYI");
   auto eltTy = addr.getElementType();
 
@@ -2948,7 +2950,8 @@ mlir::Value CIRGenFunction::emitLoadOfScalar(Address addr, bool isVolatile,
 
   if (mlir::isa<cir::VoidType>(eltTy))
     addr = addr.withElementType(builder, builder.getUIntNTy(8));
-  auto loadOp = builder.createLoad(loc, addr, isVolatile, isNontemporal);
+  auto loadOp =
+      builder.createLoad(loc, addr, isVolatile, isNontemporal, isDeref);
 
   CGM.decorateOperationWithTBAA(loadOp, tbaaInfo);
 

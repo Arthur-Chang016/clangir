@@ -848,7 +848,8 @@ public:
   }
 
   cir::LoadOp createLoad(mlir::Location loc, Address addr,
-                         bool isVolatile = false, bool isNontemporal = false) {
+                         bool isVolatile = false, bool isNontemporal = false,
+                         bool isDeref = false) {
     auto ptrTy = mlir::dyn_cast<cir::PointerType>(addr.getPointer().getType());
     if (addr.getElementType() != ptrTy.getPointee())
       addr = addr.withPointer(
@@ -859,7 +860,7 @@ public:
     if (alignment)
       align = getI64IntegerAttr(alignment);
     return create<cir::LoadOp>(
-        loc, addr.getElementType(), addr.getPointer(), /*isDeref=*/false,
+        loc, addr.getElementType(), addr.getPointer(), /*isDeref=*/isDeref,
         /*is_volatile=*/isVolatile, /*is_nontemporal=*/isNontemporal, align,
         /*mem_order=*/cir::MemOrderAttr{}, /*tbaa=*/cir::TBAAAttr{});
   }
