@@ -55,7 +55,7 @@ A foo3(void) {
 // CHECK:    [[TMP0]] = cir.alloca !cir.ptr<!rec_A>, !cir.ptr<!cir.ptr<!rec_A>>, ["a1", init]
 // CHECK:    [[TMP1]] = cir.alloca !rec_A, !cir.ptr<!rec_A>, ["a2", init]
 // CHECK:    cir.store{{.*}} %arg0, [[TMP0]] : !cir.ptr<!rec_A>, !cir.ptr<!cir.ptr<!rec_A>>
-// CHECK:    [[TMP2]] = cir.load deref{{.*}}  [[TMP0]] : !cir.ptr<!cir.ptr<!rec_A>>, !cir.ptr<!rec_A>
+// CHECK:    [[TMP2]] = cir.load {{.*}}  [[TMP0]] : !cir.ptr<!cir.ptr<!rec_A>>, !cir.ptr<!rec_A>
 // CHECK:    cir.copy [[TMP2]] to [[TMP1]] : !cir.ptr<!rec_A>
 void foo4(A* a1) {
     A a2 = *a1;
@@ -80,7 +80,7 @@ void foo6(A* a1) {
 // CHECK:   [[TMP0:%.*]] = cir.alloca !cir.ptr<!rec_A>, !cir.ptr<!cir.ptr<!rec_A>>, ["a1", init] {alignment = 8 : i64}
 // CHECK:   [[TMP1:%.*]] = cir.alloca !rec_A, !cir.ptr<!rec_A>, ["a2", init] {alignment = 4 : i64}
 // CHECK:   cir.store{{.*}} %arg0, [[TMP0]] : !cir.ptr<!rec_A>, !cir.ptr<!cir.ptr<!rec_A>>
-// CHECK:   [[TMP2:%.*]] = cir.load deref{{.*}}  [[TMP0]] : !cir.ptr<!cir.ptr<!rec_A>>, !cir.ptr<!rec_A>
+// CHECK:   [[TMP2:%.*]] = cir.load {{.*}}  [[TMP0]] : !cir.ptr<!cir.ptr<!rec_A>>, !cir.ptr<!rec_A>
 // CHECK:   cir.copy [[TMP2]] to [[TMP1]] : !cir.ptr<!rec_A>
 }
 

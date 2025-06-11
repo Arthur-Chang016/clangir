@@ -29,7 +29,7 @@ void test_ref() {
   pi1_t ptr;
   ri1_t ref1 = *ptr;
   ri2_t ref2 = (ri2_t)ref1;
-  // CIR:      %[[#DEREF:]] = cir.load deref{{.*}}  %{{[0-9]+}} : !cir.ptr<!cir.ptr<!s32i, addrspace(target<1>)>>, !cir.ptr<!s32i, addrspace(target<1>)>
+  // CIR:      %[[#DEREF:]] = cir.load {{.*}}  %{{[0-9]+}} : !cir.ptr<!cir.ptr<!s32i, addrspace(target<1>)>>, !cir.ptr<!s32i, addrspace(target<1>)>
   // CIR-NEXT: cir.store{{.*}} %[[#DEREF]], %[[#ALLOCAREF1:]] : !cir.ptr<!s32i, addrspace(target<1>)>, !cir.ptr<!cir.ptr<!s32i, addrspace(target<1>)>>
   // CIR-NEXT: %[[#REF1:]] = cir.load{{.*}} %[[#ALLOCAREF1]] : !cir.ptr<!cir.ptr<!s32i, addrspace(target<1>)>>, !cir.ptr<!s32i, addrspace(target<1>)>
   // CIR-NEXT: %[[#CAST:]] = cir.cast(address_space, %[[#REF1]] : !cir.ptr<!s32i, addrspace(target<1>)>), !cir.ptr<!s32i, addrspace(target<2>)>

@@ -44,11 +44,11 @@ int *p2() {
 // CHECK-NEXT:    cir.store{{.*}} %8, %7 : !s32i, !cir.ptr<!s32i>
 // CHECK-NEXT:    cir.store{{.*}} %7, %1 : !cir.ptr<!s32i>, !cir.ptr<!cir.ptr<!s32i>>
 // CHECK-NEXT:    %9 = cir.const #cir.int<42> : !s32i
-// CHECK-NEXT:    %10 = cir.load deref{{.*}}  %1 : !cir.ptr<!cir.ptr<!s32i>>, !cir.ptr<!s32i>
+// CHECK-NEXT:    %10 = cir.load {{.*}}  %1 : !cir.ptr<!cir.ptr<!s32i>>, !cir.ptr<!s32i>
 // CHECK-NEXT:    cir.store{{.*}} %9, %10 : !s32i, !cir.ptr<!s32i>
 // CHECK-NEXT:  } loc(#[[locScope:loc[0-9]+]])
 // CHECK-NEXT:  %3 = cir.const #cir.int<42> : !s32i
-// CHECK-NEXT:  %4 = cir.load deref{{.*}}  %1 : !cir.ptr<!cir.ptr<!s32i>>, !cir.ptr<!s32i>
+// CHECK-NEXT:  %4 = cir.load {{.*}}  %1 : !cir.ptr<!cir.ptr<!s32i>>, !cir.ptr<!s32i>
 // CHECK-NEXT:  cir.store{{.*}} %3, %4 : !s32i, !cir.ptr<!s32i>
 // CHECK-NEXT:  %5 = cir.load{{.*}} %1 : !cir.ptr<!cir.ptr<!s32i>>, !cir.ptr<!s32i>
 // CHECK-NEXT:  cir.store{{.*}} %5, %0 : !cir.ptr<!s32i>, !cir.ptr<!cir.ptr<!s32i>>

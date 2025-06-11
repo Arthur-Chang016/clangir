@@ -6,7 +6,7 @@ int test_load(volatile int *ptr) {
 }
 
 // CHECK: cir.func dso_local @_Z9test_loadPVi
-// CHECK:   %{{.+}} = cir.load volatile
+// CHECK:   %{{.+}} = cir.load deref volatile
 
 void test_store(volatile int *ptr) {
   *ptr = 42;

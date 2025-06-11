@@ -45,7 +45,7 @@ struct String {
   // CHECK:   %2 = cir.alloca !cir.ptr<!rec_StringView>, !cir.ptr<!cir.ptr<!rec_StringView>>, ["__retval"] {alignment = 8 : i64}
   // CHECK:   cir.store{{.*}} %arg0, %0 : !cir.ptr<!rec_StringView>
   // CHECK:   cir.store{{.*}} %arg1, %1 : !cir.ptr<!rec_StringView>
-  // CHECK:   %3 = cir.load{{.*}} deref %0 : !cir.ptr<!cir.ptr<!rec_StringView>>
+  // CHECK:   %3 = cir.load{{.*}} %0 : !cir.ptr<!cir.ptr<!rec_StringView>>
   // CHECK:   %4 = cir.load{{.*}} %1 : !cir.ptr<!cir.ptr<!rec_StringView>>
   // CHECK:   %5 = cir.get_member %4[0] {name = "size"}
   // CHECK:   %6 = cir.load{{.*}} %5 : !cir.ptr<!s64i>, !s64i
@@ -113,7 +113,7 @@ struct ContainsNonTrivial {
 // CHECK-NEXT:    %[[#RETVAL:]] = cir.alloca !cir.ptr<!rec_ContainsNonTrivial>
 // CHECK-NEXT:    cir.store{{.*}} %arg0, %[[#THIS]]
 // CHECK-NEXT:    cir.store{{.*}} %arg1, %[[#OTHER]]
-// CHECK-NEXT:    %[[#THIS_LOAD:]] = cir.load{{.*}} deref %[[#THIS]]
+// CHECK-NEXT:    %[[#THIS_LOAD:]] = cir.load{{.*}} %[[#THIS]]
 // CHECK-NEXT:    %[[#THIS_START:]] = cir.get_member %[[#THIS_LOAD]][0] {name = "start"}
 // CHECK-NEXT:    %[[#OTHER_LOAD:]] = cir.load{{.*}} %[[#OTHER]]
 // CHECK-NEXT:    %[[#OTHER_START:]] = cir.get_member %[[#OTHER_LOAD]][0] {name = "start"}
@@ -160,7 +160,7 @@ struct Trivial {
 // CHECK-NEXT:    %[[#RETVAL:]] = cir.alloca !cir.ptr<!rec_Trivial>
 // CHECK-NEXT:    cir.store{{.*}} %arg0, %[[#THIS]]
 // CHECK-NEXT:    cir.store{{.*}} %arg1, %[[#OTHER]]
-// CHECK-NEXT:    %[[#THIS_LOAD:]] = cir.load{{.*}} deref %[[#THIS]]
+// CHECK-NEXT:    %[[#THIS_LOAD:]] = cir.load{{.*}} %[[#THIS]]
 // CHECK-NEXT:    %[[#THIS_I:]] = cir.get_member %[[#THIS_LOAD]][0] {name = "i"}
 // CHECK-NEXT:    %[[#OTHER_LOAD:]] = cir.load{{.*}} %[[#OTHER]]
 // CHECK-NEXT:    %[[#OTHER_I:]] = cir.get_member %[[#OTHER_LOAD]][0] {name = "i"}
@@ -200,7 +200,7 @@ struct ContainsTrivialArray {
 
 // We should be calling operator= here but don't currently.
 // CHECK-LABEL: cir.func dso_local @_ZN20ContainsTrivialArrayaSERKS_(
-// CHECK:         %[[#THIS_LOAD:]] = cir.load{{.*}} deref %[[#]]
+// CHECK:         %[[#THIS_LOAD:]] = cir.load{{.*}} %[[#]]
 // CHECK-NEXT:    %[[#THIS_ARR:]] = cir.get_member %[[#THIS_LOAD]][0] {name = "arr"}
 // CHECK-NEXT:    %[[#THIS_ARR_CAST:]] = cir.cast(bitcast, %[[#THIS_ARR]] : !cir.ptr<!cir.array<!rec_Trivial x 2>>), !cir.ptr<!void>
 // CHECK-NEXT:    %[[#OTHER_LOAD:]] = cir.load{{.*}} %[[#]]

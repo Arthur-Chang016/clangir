@@ -141,7 +141,7 @@ public:
 // CHECK: cir.func linkonce_odr @_ZN1B3fooEv(%arg0: !cir.ptr<!rec_B>
 // CHECK:   %0 = cir.alloca !cir.ptr<!rec_B>, !cir.ptr<!cir.ptr<!rec_B>>, ["this", init] {alignment = 8 : i64}
 // CHECK:   cir.store %arg0, %0 : !cir.ptr<!rec_B>, !cir.ptr<!cir.ptr<!rec_B>>
-// CHECK:   %1 = cir.load{{.*}} deref %0 : !cir.ptr<!cir.ptr<!rec_B>>, !cir.ptr<!rec_B>
+// CHECK:   %1 = cir.load{{.*}} %0 : !cir.ptr<!cir.ptr<!rec_B>>, !cir.ptr<!rec_B>
 // CHECK:   cir.scope {
 // CHECK:     %2 = cir.alloca !rec_A, !cir.ptr<!rec_A>, ["ref.tmp0"] {alignment = 8 : i64}
 // CHECK:     %3 = cir.base_class_addr %1 : !cir.ptr<!rec_B> nonnull [0] -> !cir.ptr<!rec_A>

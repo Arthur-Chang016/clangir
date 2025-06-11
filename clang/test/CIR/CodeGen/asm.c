@@ -110,7 +110,7 @@ unsigned add3(unsigned int x) { // ((42 + x) - 1) * 2
 
 // CHECK: [[TMP0:%.*]] = cir.alloca !cir.ptr<!s32i>, !cir.ptr<!cir.ptr<!s32i>>, ["x", init] 
 // CHECK: cir.store{{.*}} %arg0, [[TMP0]] : !cir.ptr<!s32i>, !cir.ptr<!cir.ptr<!s32i>>
-// CHECK: [[TMP1:%.*]] = cir.load deref{{.*}}  [[TMP0]] : !cir.ptr<!cir.ptr<!s32i>>, !cir.ptr<!s32i>
+// CHECK: [[TMP1:%.*]] = cir.load {{.*}}  [[TMP0]] : !cir.ptr<!cir.ptr<!s32i>>, !cir.ptr<!s32i>
 // CHECK: cir.asm(x86_att, 
 // CHECK:       out = [%1 : !cir.ptr<!s32i> (maybe_memory)],
 // CHECK:       in = [],
